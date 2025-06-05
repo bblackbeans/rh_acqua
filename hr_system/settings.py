@@ -26,6 +26,10 @@ SECRET_KEY = 'django-insecure-_snlpzw0#(o9ysgn4h)!ex*=xh#6e8h$#54=by(bl4gp%e_(9b
 DEBUG = True
 
 ALLOWED_HOSTS = []
+# CSRF settings
+CSRF_TRUSTED_ORIGINS = ['https://8000-isqdfdoa4spp7ovjtcer0-3ca6c0ab.manusvm.computer']
+
+
 
 
 # Application definition
@@ -64,7 +68,7 @@ ROOT_URLCONF = 'hr_system.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

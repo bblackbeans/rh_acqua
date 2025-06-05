@@ -25,6 +25,8 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("vagas/", include("vacancies.urls", namespace="vacancies")),
     path("conta/", include("accounts.urls", namespace="accounts")),
+    path("accounts/", include("django.contrib.auth.urls")), # Provides login, logout, password reset etc.
+
     # Add other app URLs here (e.g., notifications)
 
     # Include Django's built-in auth URLs for login/logout etc.
