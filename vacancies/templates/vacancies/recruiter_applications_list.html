@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% blocktrans with title=vacancy.title %}Candidaturas para {{ title }}{% endblocktrans %}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'vacancies:recruiter_dashboard' %}">{% trans "Painel Recrutador" %}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{% trans "Candidaturas para" %} {{ vacancy.title }}</li>
+        </ol>
+    </nav>
+
+    <h2>{% trans "Candidaturas para:" %} {{ vacancy.title }}</h2>
+    <p><strong>{% trans "Unidade:" %}</strong> {{ vacancy.hospital_unit.name }}</p>
+    <hr>
+
+    {# Filtering and Sorting Form #}
+    <form method="get" class="row g-3 mb-4 align-items-center">
+        <div class="col-md-4">
+            <label for="status" class="form-label">{% trans "Filtrar por Status:" %}</label>
+            <select name="status" id="status" class="form-select form-select-sm" onchange="this.form.submit()">
+                <option value="" {% if not current_status_filter %}selected{% endif %}>{% trans "Todos os Status" %}</option>
+                {% for value, display in status_choices %}
+                    <option value="{{ value }}" {% if current_status_filter == value %}selected{% endif %}>{{ display }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label for="sort" class="form-label">{% trans "Ordenar por:" %}</label>
+            <select name="sort" id="sort" class="form-select form-select-sm" onchange="this.form.submit()">
+                <option value="-application_date" {% if current_sort == 
+"-application_date" %}selected{% endif %}>{% trans "Data Candidatura (Mais Recente)" %}</option>
+                <option value="application_date" {% if current_sort == "application_date" %}selected{% endif %}>{% trans "Data Candidatura (Mais Antiga)" %}</option>
+                <option value="candidate__full_name" {% if current_sort == "candidate__full_name" %}selected{% endif %}>{% trans "Nome Candidato (A-Z)" %}</option>
+                <option value="-candidate__full_name" {% if current_sort == "-candidate__full_name" %}selected{% endif %}>{% trans "Nome Candidato (Z-A)" %}</option>
+                <option value="status" {% if current_sort == "status" %}selected{% endif %}>{% trans "Status" %}</option>
+                {# Add score sorting if implemented #}
+                {# <option value="-score" {% if current_sort == "-score" %}selected{% endif %}>{% trans "Score (Maior)" %}</option> #}
+                {# <option value="score" {% if current_sort == "score" %}selected{% endif %}>{% trans "Score (Menor)" %}</option> #}
+            </select>
+        </div>
+        {# Optionally add a submit button if onchange is removed #}
+        {# <div class="col-md-2"><button type="submit" class="btn btn-secondary btn-sm">Filtrar/Ordenar</button></div> #}
+    </form>
+
+    {% if applications %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>{% trans "Candidato" %}</th>
+                        <th>{% trans "Data Candidatura" %}</th>
+                        <th>{% trans "Status" %}</th>
+                        <th>{% trans "Score" %}</th>
+                        <th>{% trans "Ações" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for app in applications %}
+                        <tr>
+                            <td>{{ app.candidate.full_name }}</td>
+                            <td>{{ app.application_date|date:"d/m/Y H:i" }}</td>
+                            <td><span class="badge bg-info">{{ app.get_status_display }}</span></td>
+                            <td>{{ app.score|default:"N/A" }}</td>
+                            <td>
+                                <a href="{% url 'vacancies:recruiter_application_detail' app.id %}" class="btn btn-sm btn-outline-primary">{% trans "Ver Detalhes" %}</a>
+                                {# Add quick actions like change status dropdown if needed #}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p>{% trans "Nenhuma candidatura encontrada para esta vaga" %}{% if current_status_filter %} {% trans "com o status selecionado" %}{% endif %}.</p>
+    {% endif %}
+
+    {# Add pagination if needed #}
+
+</div>
+{% endblock %}
+

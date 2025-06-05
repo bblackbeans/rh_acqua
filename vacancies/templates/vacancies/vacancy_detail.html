@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ vacancy.title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'vacancies:list' %}">{% trans "Vagas" %}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ vacancy.title }}</li>
+        </ol>
+    </nav>
+
+    <div class="card">
+        <div class="card-header">
+            <h2>{{ vacancy.title }}</h2>
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">{% trans "Detalhes da Vaga" %}</h5>
+            <p><strong>{% trans "Unidade Hospitalar:" %}</strong> {{ vacancy.hospital_unit.name }} ({{ vacancy.hospital_unit.city }}/{{ vacancy.hospital_unit.state }})</p>
+            {% if vacancy.department %}
+                <p><strong>{% trans "Setor:" %}</strong> {{ vacancy.department.name }}</p>
+            {% endif %}
+            <p><strong>{% trans "Tipo de Vaga:" %}</strong> {{ vacancy.vacancy_type.name }}</p>
+            <p><strong>{% trans "Status:" %}</strong> <span class="badge bg-{% if vacancy.status == 'OPEN' %}success{% elif vacancy.status == 'CLOSED' %}warning{% else %}secondary{% endif %}">{{ vacancy.get_status_display }}</span></p>
+            {% if vacancy.salary_range %}
+                <p><strong>{% trans "Faixa Salarial:" %}</strong> {{ vacancy.salary_range }}</p>
+            {% endif %}
+            <p><strong>{% trans "Publicada em:" %}</strong> {{ vacancy.created_at|date:"d/m/Y H:i" }}</p>
+
+            <hr>
+            <h5>{% trans "Descrição" %}</h5>
+            <p>{{ vacancy.description|linebreaksbr }}</p>
+
+            <hr>
+            <h5>{% trans "Requisitos" %}</h5>
+            <p>{{ vacancy.requirements|linebreaksbr }}</p>
+        </div>
+        <div class="card-footer text-muted">
+            {% if user.is_authenticated %}
+                {% if vacancy.status == 'OPEN' %}
+                    {% if already_applied %}
+                        <span class="badge bg-info">{% trans "Você já se candidatou para esta vaga." %}</span>
+                        <a href="{% url 'accounts:my_applications' %}" class="btn btn-secondary btn-sm ms-2">{% trans "Ver Minhas Candidaturas" %}</a> {# Assuming accounts:my_applications URL #}
+                    {% else %}
+                        <a href="{% url 'vacancies:apply' vacancy.id %}" class="btn btn-primary">{% trans "Candidatar-se Agora" %}</a>
+                    {% endif %}
+                {% else %}
+                    <span class="badge bg-secondary">{% trans "Vaga não está mais aberta para candidaturas." %}</span>
+                {% endif %}
+            {% else %}
+                <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-primary">{% trans "Faça login para se candidatar" %}</a> {# Assuming standard login URL #}
+            {% endif %}
+            <a href="{% url 'vacancies:list' %}" class="btn btn-outline-secondary ms-2">{% trans "Voltar para Lista de Vagas" %}</a>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+

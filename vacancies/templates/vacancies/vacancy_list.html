@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Vagas Abertas" %}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>{% trans "Vagas Abertas" %}</h2>
+    <hr>
+
+    {# Add filtering form here if needed #}
+
+    {% if vacancies %}
+        <div class="list-group">
+            {% for vacancy in vacancies %}
+                <a href="{% url 'vacancies:detail' vacancy.id %}" class="list-group-item list-group-item-action flex-column align-items-start mb-2">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">{{ vacancy.title }}</h5>
+                        <small>{{ vacancy.created_at|date:"d/m/Y" }}</small>
+                    </div>
+                    <p class="mb-1"><strong>{% trans "Unidade:" %}</strong> {{ vacancy.hospital_unit.name }} - {{ vacancy.hospital_unit.city }}/{{ vacancy.hospital_unit.state }}</p>
+                    <p class="mb-1"><strong>{% trans "Tipo:" %}</strong> {{ vacancy.vacancy_type.name }}</p>
+                    <small>{% trans "Status:" %} {{ vacancy.get_status_display }}</small>
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>{% trans "Nenhuma vaga aberta encontrada no momento." %}</p>
+    {% endif %}
+
+    {# Add pagination controls here if needed #}
+
+</div>
+{% endblock %}
+

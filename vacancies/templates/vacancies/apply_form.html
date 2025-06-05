@@ -1,0 +1,61 @@
+{% extends "base.html" %} {# Assuming a base template exists #}
+{% load i18n %}
+
+{% block title %}{% trans "Candidatar-se para" %} {{ vacancy.title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>{% trans "Candidatar-se para a Vaga:" %} {{ vacancy.title }}</h2>
+    <p><strong>{% trans "Unidade:" %}</strong> {{ vacancy.hospital_unit }}</p>
+    <p><strong>{% trans "Tipo de Vaga:" %}</strong> {{ vacancy.vacancy_type.name }}</p>
+    <hr>
+
+    <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {% for error in form.non_field_errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <h4>{% trans "Preencha os campos abaixo:" %}</h4>
+
+        {% for field in form %}
+            <div class="mb-3">
+                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}{% if field.field.required %} <span class="text-danger">*</span>{% endif %}</label>
+                
+                {{ field }} {# Render the field using Django's default rendering #}
+                
+                {% if field.help_text %}
+                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                {% endif %}
+                {% if field.errors %}
+                    <div class="invalid-feedback d-block">
+                        {% for error in field.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        <hr>
+        <button type="submit" class="btn btn-primary">{% trans "Enviar Candidatura" %}</button>
+        <a href="{% url 'vacancies:list' %}" class="btn btn-secondary">{% trans "Cancelar" %}</a> {# Assuming a vacancy list URL exists #}
+    </form>
+
+</div>
+{% endblock %}
+
+{% comment %}
+Notes:
+- This template assumes you have a base template (`base.html`) with Bootstrap 5 loaded.
+- It iterates through the dynamically generated form fields.
+- Basic error handling is included.
+- You might need to adjust field rendering based on specific widget types if the default isn't sufficient (e.g., for complex conditional logic better handled with JavaScript).
+- Assumes URLs named `vacancies:list` and `vacancies:application_success` exist or will be created.
+{% endcomment %}
+

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% blocktrans with name=application.candidate.full_name %}Agendar Entrevista para {{ name }}{% endblocktrans %}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'vacancies:recruiter_dashboard' %}">{% trans "Painel Recrutador" %}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'vacancies:recruiter_applications_list' application.job_vacancy.id %}">{% trans "Candidaturas para" %} {{ application.job_vacancy.title }}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'vacancies:recruiter_application_detail' application.id %}">{{ application.candidate.full_name }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{% trans "Agendar Entrevista" %}</li>
+        </ol>
+    </nav>
+
+    <h2>{% trans "Agendar Entrevista" %}</h2>
+    <p>{% blocktrans with name=application.candidate.full_name vacancy=application.job_vacancy.title %}Agendando entrevista para <strong>{{ name }}</strong> na vaga <strong>{{ vacancy }}</strong>.{% endblocktrans %}</p>
+    <hr>
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {% for error in form.non_field_errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% for field in form %}
+            <div class="mb-3">
+                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}{% if field.field.required %} <span class="text-danger">*</span>{% endif %}</label>
+                {{ field }} {# Render the field using Django's default rendering with Bootstrap classes applied in the form #}
+                {% if field.help_text %}
+                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                {% endif %}
+                {% if field.errors %}
+                    <div class="invalid-feedback d-block">
+                        {% for error in field.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        <button type="submit" class="btn btn-primary">{% trans "Salvar Agendamento" %}</button>
+        <a href="{% url 'vacancies:recruiter_application_detail' application.id %}" class="btn btn-secondary">{% trans "Cancelar" %}</a>
+    </form>
+
+</div>
+{% endblock %}
+

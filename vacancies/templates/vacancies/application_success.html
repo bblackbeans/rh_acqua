@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Candidatura Enviada com Sucesso" %}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="alert alert-success" role="alert">
+        <h4 class="alert-heading">{% trans "Candidatura Enviada!" %}</h4>
+        {% if vacancy %}
+            <p>{% blocktrans %}Sua candidatura para a vaga <strong>{{ vacancy.title }}</strong> foi enviada com sucesso.{% endblocktrans %}</p>
+        {% else %}
+             <p>{% trans "Sua candidatura foi enviada com sucesso." %}</p>
+        {% endif %}
+        <hr>
+        <p class="mb-0">{% trans "Você pode acompanhar o status de suas candidaturas na sua área pessoal." %}</p>
+    </div>
+
+    <a href="{% url 'vacancies:list' %}" class="btn btn-primary">{% trans "Ver Outras Vagas" %}</a>
+    <a href="{% url 'accounts:my_applications' %}" class="btn btn-secondary">{% trans "Ver Minhas Candidaturas" %}</a> {# Assuming accounts:my_applications URL #}
+
+</div>
+{% endblock %}
+

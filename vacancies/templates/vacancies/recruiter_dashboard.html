@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Painel do Recrutador" %}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>{% trans "Painel do Recrutador" %}</h2>
+    <p>{% trans "Gerencie as vagas e candidaturas." %}</p>
+    <hr>
+
+    <h4>{% trans "Vagas Ativas" %}</h4>
+    {% if vacancies %}
+        <div class="list-group">
+            {% for vacancy in vacancies %}
+                <a href="{% url 'vacancies:recruiter_applications_list' vacancy.id %}" class="list-group-item list-group-item-action flex-column align-items-start mb-2">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">{{ vacancy.title }}</h5>
+                        <small>{{ vacancy.created_at|date:"d/m/Y" }}</small>
+                    </div>
+                    <p class="mb-1"><strong>{% trans "Unidade:" %}</strong> {{ vacancy.hospital_unit.name }}</p>
+                    <p class="mb-1"><strong>{% trans "Status:" %}</strong> {{ vacancy.get_status_display }}</p>
+                    <small>{% blocktrans count counter=vacancy.applications.count %}{{ counter }} candidatura{% plural %}{{ counter }} candidaturas{% endblocktrans %}</small>
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>{% trans "Nenhuma vaga encontrada." %}</p>
+    {% endif %}
+
+    {# Add links to create new vacancy if applicable #}
+
+</div>
+{% endblock %}
+

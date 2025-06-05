@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Minhas Candidaturas" %}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>{% trans "Minhas Candidaturas" %}</h2>
+    <hr>
+
+    {% if applications %}
+        <div class="list-group">
+            {% for app in applications %}
+                <div class="list-group-item list-group-item-action flex-column align-items-start mb-2">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1"><a href="{% url 'vacancies:detail' app.job_vacancy.id %}">{{ app.job_vacancy.title }}</a></h5>
+                        <small>{% trans "Aplicado em:" %} {{ app.application_date|date:"d/m/Y H:i" }}</small>
+                    </div>
+                    <p class="mb-1"><strong>{% trans "Unidade:" %}</strong> {{ app.job_vacancy.hospital_unit.name }}</p>
+                    <p class="mb-1"><strong>{% trans "Status:" %}</strong> <span class="badge bg-info">{{ app.get_status_display }}</span></p>
+                    {# Optionally add link to view submitted data or interview details if applicable #}
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>{% trans "Você ainda não se candidatou a nenhuma vaga." %}</p>
+        <a href="{% url 'vacancies:list' %}" class="btn btn-primary">{% trans "Ver Vagas Abertas" %}</a>
+    {% endif %}
+
+    {# Add pagination if needed #}
+
+</div>
+{% endblock %}
+

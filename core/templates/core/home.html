@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Sistema de RH - Gestão de Vagas" %}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="p-5 mb-4 bg-light rounded-3">
+        <div class="container-fluid py-5">
+            <h1 class="display-5 fw-bold">{% trans "Bem-vindo ao Sistema de RH" %}</h1>
+            <p class="col-md-8 fs-4">{% trans "Gerencie vagas, candidaturas e processos seletivos de forma eficiente." %}</p>
+            <a href="{% url 'vacancies:list' %}" class="btn btn-primary btn-lg" type="button">{% trans "Ver Vagas Abertas" %}</a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'accounts:my_applications' %}" class="btn btn-secondary btn-lg" type="button">{% trans "Minhas Candidaturas" %}</a>
+            {% else %}
+                 <a href="#" class="btn btn-secondary btn-lg" type="button">{% trans "Entrar / Registrar" %}</a> {# Replace # with login/register URL #}
+            {% endif %}
+        </div>
+    </div>
+
+    {# Optionally add sections for featured vacancies or quick stats #}
+
+</div>
+{% endblock %}
+

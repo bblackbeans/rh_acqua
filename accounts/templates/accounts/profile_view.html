@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Meu Perfil" %}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>{% trans "Meu Perfil" %}</h2>
+    <hr>
+
+    <div class="card">
+        <div class="card-header">
+            <h4>{{ profile.full_name|default:user.username }}</h4>
+        </div>
+        <div class="card-body">
+            <p><strong>{% trans "Nome Completo:" %}</strong> {{ profile.full_name|default:"-" }}</p>
+            <p><strong>{% trans "Email:" %}</strong> {{ user.email }}</p>
+            <p><strong>{% trans "CPF:" %}</strong> {{ profile.cpf|default:"-" }}</p>
+            <p><strong>{% trans "Data de Nascimento:" %}</strong> {{ profile.birth_date|date:"d/m/Y"|default:"-" }}</p>
+            <p><strong>{% trans "Telefone/WhatsApp:" %}</strong> {{ profile.phone_whatsapp|default:"-" }}</p>
+            <p><strong>{% trans "Endereço:" %}</strong>
+                {{ profile.address_street|default:"" }} {{ profile.address_number|default:"" }} {{ profile.address_complement|default:"" }}
+                {% if profile.address_neighborhood %}- {{ profile.address_neighborhood }}{% endif %}
+                {% if profile.address_city %}, {{ profile.address_city }}{% endif %}
+                {% if profile.address_state %}/{{ profile.address_state }}{% endif %}
+                {% if profile.address_zip_code %}(CEP: {{ profile.address_zip_code }}){% endif %}
+                {% if not profile.address_street %}-{% endif %}
+            </p>
+            {% if profile.cv_file %}
+                <p><strong>{% trans "Currículo Anexado:" %}</strong> <a href="{{ profile.cv_file.url }}" target="_blank">{% trans "Visualizar/Baixar CV" %}</a></p>
+            {% else %}
+                <p><strong>{% trans "Currículo Anexado:" %}</strong> {% trans "Nenhum currículo enviado." %}</p>
+            {% endif %}
+
+            {# Add Education/Experience sections here if implemented #}
+
+        </div>
+        <div class="card-footer">
+            <a href="{% url 'accounts:profile_edit' %}" class="btn btn-primary">{% trans "Editar Perfil" %}</a>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
